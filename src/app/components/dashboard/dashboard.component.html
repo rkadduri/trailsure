@@ -1,0 +1,224 @@
+
+<div class="container">
+<div class="app-logo-header fixed-top">  
+    <a class="navbar-brand" href="#">
+      <img src="Evoke_logo.svg" height="40" alt="logo" />
+      <img src="trailblazers.svg" height="40" alt="logo" />
+    </a>
+  </div>
+</div>
+
+<div class="container">
+    <h1>TrailSure Insurance Management</h1>
+    <div class="summary-card flex">
+        <div class="summary-item">
+          <div class="flex-item">
+            <img src="Total_request_received.svg" alt="Total Requests" />
+            <h3>Total Requests Received</h3>           
+            <p> {{ totalCustomers }}</p>
+          </div>
+        </div>
+        <div class="summary-item green-box">
+          <div class="flex-item p-remove" >
+            <img src="processed.svg" alt="Processed Requests" />
+            <h3>Processed</h3>
+            <p *ngFor="let status of getStatusList()">{{ statusCounts[status] }}</p>           
+          </div>
+        </div>
+
+        <div class="summary-item red-box">
+          <div class="flex-item">
+            <img src="Un_Processed.svg" alt="Unprocessed Requests" />
+            <h3>Unprocessed</h3>
+            <!-- <p>{{ statusCounts['Suspended'] || 0 }}</p>           -->
+           <p>{{ crmLeadsCount }}</p> 
+          </div>
+        </div>
+      </div>
+  
+      <h2>Policy Overview</h2>
+
+      <div class="policy-list">
+        
+        <ul>
+          <li *ngFor="let category of getCategoryList()">
+            <span>{{ category }}</span> <h4>{{ categoryCounts[category] }}</h4>
+          </li>
+        </ul>
+       
+      </div>
+    <div class="transcation-details">
+    <mat-tab-group>
+<!--Tab 1 Processed-->
+        <mat-tab label="Processed">   <!--Records-->
+            <div class="mat-elevation-z8">
+              <table mat-table [dataSource]="emailDataSource" class="mat-table" matSort>         
+                <!-- ID Column -->
+                <ng-container matColumnDef="customerId">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Customer ID </th>
+                  <td mat-cell *matCellDef="let email"> {{ email.customerId }} </td>
+                </ng-container>
+          
+                <!-- Customer Name Column -->
+                <ng-container matColumnDef="customerName">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Customer Name </th>
+                  <td mat-cell *matCellDef="let email"> {{ email.customerName }} </td>
+                </ng-container>
+          
+                <ng-container matColumnDef="from">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Email Address </th>
+                    <td mat-cell *matCellDef="let email"> {{ email.from }} </td>
+                  </ng-container>
+         <!-- Category Column -->
+                  <ng-container matColumnDef="category">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
+                    <td mat-cell *matCellDef="let email"> {{ email.category }} </td>
+                  </ng-container>
+        
+                  <ng-container matColumnDef="subject">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Subject </th>
+                    <td mat-cell *matCellDef="let email"> {{ email.subject }} </td>
+                  </ng-container>
+                <!-- Time Column -->
+                <ng-container matColumnDef="time">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Email Received Date </th>
+                  <td mat-cell *matCellDef="let email"> {{ email.time }} </td>
+                </ng-container>
+          
+              
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Action status </th>
+                  <td mat-cell *matCellDef="let email"> <span class="green-status">{{ email.status }}</span> </td>
+                </ng-container>
+          
+                <!-- Table Header and Rows -->
+                <tr mat-header-row *matHeaderRowDef="displayedEmailColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedEmailColumns;"></tr>
+              </table>
+            </div>
+        </mat-tab>
+
+<!--Tab 2 Unprocessed-->
+        <mat-tab label="Unprocessed">
+          <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="crmLeadsDataSource" class="mat-table" matSort>
+              
+              <!-- Lead ID Column -->
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Lead ID </th>
+                <td mat-cell *matCellDef="let lead"> {{ lead.id }} </td>
+              </ng-container>
+        
+              <!-- From Column -->
+              <ng-container matColumnDef="from">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> From </th>
+                <td mat-cell *matCellDef="let lead"> {{ lead.from }} </td>
+              </ng-container>
+        
+              <!-- Time Column -->
+              <ng-container matColumnDef="time">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Time </th>
+                <td mat-cell *matCellDef="let lead"> {{ lead.time }} </td>
+              </ng-container>
+        
+              <!-- Subject Column -->
+              <ng-container matColumnDef="subject">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Subject </th>
+                <td mat-cell *matCellDef="let lead"> {{ lead.subject }} </td>
+              </ng-container>
+        
+              <!-- Category Column -->
+              <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
+                <td mat-cell *matCellDef="let lead"> {{ lead.category }} </td>
+              </ng-container>
+        
+              <!-- Key Phrases Column -->
+              <ng-container matColumnDef="keyPhrases">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Key Phrases </th>
+                <td mat-cell *matCellDef="let lead">
+                  <ul>
+                    <li *ngFor="let phrase of lead.keyPhrases">{{ phrase }}</li>
+                  </ul>
+                </td>
+              </ng-container>
+        
+              <!-- Table Header and Rows -->
+              <tr mat-header-row *matHeaderRowDef="displayedCrmLeadColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedCrmLeadColumns;"></tr>
+            </table>
+          </div>
+        </mat-tab>
+
+<!--Tab 3 Policy Records-->
+        <mat-tab label="Customer Records"> 
+            <div class="mat-elevation-z8">
+              <table mat-table [dataSource]="policyDataSource" class="mat-table" matSort>
+          
+                <!-- Policy ID Column -->
+                <ng-container matColumnDef="policyId">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Policy ID </th>
+                  <td mat-cell *matCellDef="let policy"> {{ policy.PolicyId }} </td>
+                </ng-container>
+          
+                <!-- Customer ID Column -->
+                <ng-container matColumnDef="customerId">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Customer ID </th>
+                  <td mat-cell *matCellDef="let policy"> {{ policy.CustomerId }} </td>
+                </ng-container>
+          
+                <!-- Customer Name Column -->
+                <ng-container matColumnDef="customerName">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Customer Name </th>
+                  <td mat-cell *matCellDef="let policy"> {{ policy.CustomerName }} </td>
+                </ng-container>
+          
+                <!-- Email Column -->
+                <ng-container matColumnDef="emailId">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+                  <td mat-cell *matCellDef="let policy"> {{ policy.EmailId }} </td>
+                </ng-container>
+          
+                <!-- Start Date Column -->
+                <ng-container matColumnDef="startDate">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </th>
+                  <td mat-cell *matCellDef="let policy"> {{ policy.StartDate }} </td>
+                </ng-container>
+          
+                <!-- End Date Column -->
+                <ng-container matColumnDef="endDate">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> End Date </th>
+                  <td mat-cell *matCellDef="let policy"> {{ policy.EndDate }} </td>
+                </ng-container>
+          
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                  <td mat-cell *matCellDef="let policy"> {{ policy.Status }} </td>
+                </ng-container>
+          
+                <!-- Coverage Type Column -->
+                <ng-container matColumnDef="coverageType">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Coverage Type </th>
+                  <td mat-cell *matCellDef="let policy"> {{ policy.CoverageType }} </td>
+                </ng-container>
+          
+                <!-- Table Header and Rows -->
+                <tr mat-header-row *matHeaderRowDef="displayedPolicyColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedPolicyColumns;"></tr>
+              </table>
+            </div>
+          </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <div class="container">
+      <div class="space-b">
+     <span>All Rights Reserved <a class="copy-right" href="#"> TrailSure Insurance</a></span>
+     <span>Product Version 0.1</span>
+    </div>
+    </div>
+    </div>
